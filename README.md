@@ -10,13 +10,17 @@ Installation
 
 Add the following lines to ~/.sbt/0.13/plugins/build.sbt or PROJECT_DIR/project/plugins.sbt
 
-    addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+```sbt
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+```
 
 To use the **latest snapshot** version, add also Sonatype snapshots repository resolver into the same **plugins.sbt** file:
 
-    resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+```sbt
+resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+```
 
 Usage
 -----
@@ -33,20 +37,24 @@ The projects need to be set up in the following way:
 
 *Project A:*
 
-    import sbt._
+```scala
+import sbt._
 
-    object A extends Build {
-      lazy val A = Project("A", file(".")) aggregate(B) dependsOn(B)
-      lazy val B = RootProject(file("../B"))
-    }
+object A extends Build {
+  lazy val A = Project("A", file(".")) aggregate(B) dependsOn(B)
+  lazy val B = RootProject(file("../B"))
+}
+```
 
 *Project B:*
 
-    import sbt._
+```scala
+import sbt._
 
-    object B extends Build {
-      lazy val B = Project("B", file("."))
-    }
+object B extends Build {
+  lazy val B = Project("B", file("."))
+}
+```
 
 ### Sources and javadocs
 
@@ -59,30 +67,35 @@ Configuration settings
 
 In your build.sbt:
 
-    ideaExcludeFolders += ".idea"
+```sbt
+ideaExcludeFolders += ".idea"
 
-    ideaExcludeFolders += ".idea_modules"
+ideaExcludeFolders += ".idea_modules"
+```
 
 Or in your Build.scala:
 
-    ...
-    import org.sbtidea.SbtIdeaPlugin._
-    ...
-    lazy val myproject = Project(id = "XXXX" ....)
-    .settings(ideaExcludeFolders := ".idea" :: ".idea_modules" :: Nil)
+```scala
+...
+import org.sbtidea.SbtIdeaPlugin._
+...
+lazy val myproject = Project(id = "XXXX" ....)
+.settings(ideaExcludeFolders := ".idea" :: ".idea_modules" :: Nil)
+```
 
 ### Include extra test configurations
 
 In your Build.scala:
 
-    lazy val LoadTest = config("test-load") extend Test
-    lazy val loadTestSettings : Seq[Setting[_]] = inConfig(LoadTest)(Defaults.testSettings ++ Seq(sourceDirectory in LoadTest <<= (sourceDirectory in LoadTest)(_ / ".." / "test-load")))
+```scala
+lazy val LoadTest = config("test-load") extend Test
+lazy val loadTestSettings : Seq[Setting[_]] = inConfig(LoadTest)(Defaults.testSettings ++ Seq(sourceDirectory in LoadTest <<= (sourceDirectory in LoadTest)(_ / ".." / "test-load")))
 
-    lazy val root = Project(...)
-      .settings(ideaExtraTestConfigurations := Seq(LoadTest) :: Nil)
-      .configs( LoadTest )
-      .settings( loadTestSettings : _*)
-
+lazy val root = Project(...)
+  .settings(ideaExtraTestConfigurations := Seq(LoadTest) :: Nil)
+  .configs( LoadTest )
+  .settings( loadTestSettings : _*)
+```
 
 
 
